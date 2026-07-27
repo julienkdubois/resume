@@ -16,7 +16,7 @@ jobs:
       - name: Compiler le fichier LaTeX
         uses: xu-cheng/latex-action@v3
         with:
-          root_file: main.tex 
+          root_file: resume.tex 
 
       - name: Sauvegarder le PDF généré sur GitHub
         run: |
