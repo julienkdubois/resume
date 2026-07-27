@@ -1,0 +1,357 @@
+\documentclass[10pt, letterpaper]{article}
+
+% Packages:
+\usepackage[
+    ignoreheadfoot, % set margins without considering header and footer
+    top=2 cm, % seperation between body and page edge from the top
+    bottom=2 cm, % seperation between body and page edge from the bottom
+    left=2 cm, % seperation between body and page edge from the left
+    right=2 cm, % seperation between body and page edge from the right
+    footskip=1.0 cm, % seperation between body and footer
+    % showframe % for debugging 
+]{geometry} % for adjusting page geometry
+\usepackage[explicit]{titlesec} % for customizing section titles
+\usepackage{tabularx} % for making tables with fixed width columns
+\usepackage{array} % tabularx requires this
+\usepackage[dvipsnames]{xcolor} % for coloring text
+\definecolor{primaryColor}{RGB}{16, 38, 59} % define primary color
+\usepackage{enumitem} % for customizing lists
+\usepackage{fontawesome5} % for using icons
+\usepackage{amsmath} % for math
+\usepackage[
+    pdftitle={Julien Dubois's CV},
+    pdfauthor={Julien Dubois},
+    pdfcreator={LaTeX with RenderCV},
+    colorlinks=true,
+    urlcolor=primaryColor
+]{hyperref}
+\usepackage[useregional]{datetime2} % pour les dates% for links, metadata and bookmarks
+\usepackage[pscoord]{eso-pic} % for floating text on the page
+\usepackage{calc} % for calculating lengths
+\usepackage{bookmark} % for bookmarks
+\usepackage{lastpage} % for getting the total number of pages
+\usepackage{changepage} % for one column entries (adjustwidth environment)
+\usepackage{paracol} % for two and three column entries
+\usepackage{ifthen} % for conditional statements
+\usepackage{needspace} % for avoiding page brake right after the section title
+\usepackage{iftex} % check if engine is pdflatex, xetex or luatex
+
+% Ensure that generate pdf is machine readable/ATS parsable:
+\ifPDFTeX
+    \input{glyphtounicode}
+    \pdfgentounicode=1
+    \usepackage[T1]{fontenc}
+    \usepackage[utf8]{inputenc}
+    \usepackage{lmodern}
+\fi
+
+\usepackage[default, type1]{sourcesanspro} 
+
+% Some settings:
+\AtBeginEnvironment{adjustwidth}{\partopsep0pt} % remove space before adjustwidth environment
+\pagestyle{empty} % no header or footer
+\setcounter{secnumdepth}{0} % no section numbering
+\setlength{\parindent}{0pt} % no indentation
+\setlength{\topskip}{0pt} % no top skip
+\setlength{\columnsep}{0.15cm} % set column seperation
+\makeatletter
+\let\ps@customFooterStyle\ps@plain % Copy the plain style to customFooterStyle
+
+\makeatother
+\pagestyle{customFooterStyle}
+
+\titleformat{\section}{
+    % avoid page braking right after the section title
+    \needspace{4\baselineskip}
+    % make the font size of the section title large and color it with the primary color
+    \Large\color{primaryColor}
+}{
+}{
+}{
+    % print bold title, give 0.15 cm space and draw a line of 0.8 pt thickness
+    % from the end of the title to the end of the body
+    \textbf{#1}\hspace{0.15cm}\titlerule[0.8pt]\hspace{-0.1cm}
+}[] % section title formatting
+
+\titlespacing{\section}{
+    % left space:
+    -1pt
+}{
+    % top space:
+    0.3 cm
+}{
+    % bottom space:
+    0.2 cm
+} % section title spacing
+
+% \renewcommand\labelitemi{$\vcenter{\hbox{\small$\bullet$}}$} % custom bullet points
+\newenvironment{highlights}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=0.4 cm + 10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights
+
+\newenvironment{highlightsforbulletentries}{
+    \begin{itemize}[
+        topsep=0.10 cm,
+        parsep=0.10 cm,
+        partopsep=0pt,
+        itemsep=0pt,
+        leftmargin=10pt
+    ]
+}{
+    \end{itemize}
+} % new environment for highlights for bullet entries
+
+\newcommand{\monthnameenglish}[1]{%
+  \ifcase#1\relax
+    \or January%
+    \or February%
+    \or March%
+    \or April%
+    \or May%
+    \or June%
+    \or July%
+    \or August%
+    \or September%
+    \or October%
+    \or November%
+    \or December%
+  \fi
+}
+
+\newenvironment{onecolentry}{
+    \begin{adjustwidth}{
+        0.2 cm + 0.00001 cm
+    }{
+        0.2 cm + 0.00001 cm
+    }
+}{
+    \end{adjustwidth}
+} % new environment for one column entries
+
+\newenvironment{twocolentry}[2][]{
+    \onecolentry
+    \def\secondColumn{#2}
+    \setcolumnwidth{\fill, 4.5 cm}
+    \begin{paracol}{2}
+}{
+    \switchcolumn \raggedleft \secondColumn
+    \end{paracol}
+    \endonecolentry
+} % new environment for two column entries
+
+\newenvironment{threecolentry}[3][]{
+    \onecolentry
+    \def\thirdColumn{#3}
+    \setcolumnwidth{1 cm, \fill, 4.5 cm}
+    \begin{paracol}{3}
+    {\raggedright #2} \switchcolumn
+}{
+    \switchcolumn \raggedleft \thirdColumn
+    \end{paracol}
+    \endonecolentry
+} % new environment for three column entries
+
+\newenvironment{header}{
+    \setlength{\topsep}{0pt}\par\kern\topsep\centering\color{primaryColor}\linespread{1.5}
+}{
+    \par\kern\topsep
+} % new environment for the header
+
+
+\newcommand{\placelastupdatedtext}{%
+  \AddToShipoutPictureFG*{%
+    \put(
+        \LenToUnit{\paperwidth-3 cm-0.2 cm+0.05cm},%
+        \LenToUnit{\paperheight-1.0 cm}%
+    ){%
+      \vtop{%
+        {\null}%
+        \makebox[0pt][c]{%
+          \small\color{gray}\textit{Last updated: \monthnameenglish{\month}~\the\year}%
+        }%
+      }%
+    }%
+  }%
+}
+
+% save the original href command in a new command:
+\let\hrefWithoutArrow\href
+
+% new command for external links:
+\renewcommand{\href}[2]{\hrefWithoutArrow{#1}{\ifthenelse{\equal{#2}{}}{ }{#2 }\raisebox{.15ex}{\footnotesize \faExternalLink*}}}
+
+
+\begin{document}
+    \newcommand{\AND}{\unskip
+        \cleaders\copy\ANDbox\hskip\wd\ANDbox
+        \ignorespaces
+    }
+    \newsavebox\ANDbox
+    \sbox\ANDbox{}
+
+    \placelastupdatedtext
+    \begin{header}
+        \fontsize{30 pt}{30 pt}
+        \textbf{Julien DUBOIS}
+
+        \vspace{0.3 cm}
+
+        \normalsize
+        \mbox{{\footnotesize\faMapMarker*}\hspace*{0.13cm}Paris}%
+        \kern 0.25 cm%
+        \AND%
+        \kern 0.25 cm%
+        \mbox{\hrefWithoutArrow{julien.dubois@@ensae.fr}{{\footnotesize\faEnvelope[regular]}\hspace*{0.13cm}julien.dubois@@ensae.fr}}%
+        \kern 0.25 cm%
+        \AND%
+    
+        %\kern 0.25 cm%
+        %\mbox{\hrefWithoutArrow{coming soon}{{\footnotesize\faLink}\hspace*{0.13cm}}}%
+        %\kern 0.25 cmm
+        \mbox{\hrefWithoutArrow{https://github.com/julienkdubois}{{\footnotesize\faGithub}\hspace*{0.13cm}julienkdubois}}%
+    \end{header}
+
+    \vspace{0.3 cm - 0.3 cm}
+
+    \section{Work in Progress}
+
+\begin{threecolentry}{}{
+    Ongoing}
+    \textbf{Phasing Out Fossil Fuels: A Theory to Disentangle Transition Forces}
+    \begin{highlights}
+        \item Presented at \textit{Crest 1st year PhD Workshop 2025}, \textit{11th FSR Climate Annual Conference}, \textit{1st Manchester Workshop on the Economcis of Energy Transition}, \textit{Crest PhD Seminar}, \textit{Work in Progress Environmental Economics PhD Seminar, LSE Department of Geography and Environment}, \textit{Paris Environmental Economics Workshop}, \textit{Doctorissimes 2026}, \textit{Crest Macro Seminar}, \textit{WCERE 2026}
+        \item Upcoming presentation: 13th FAERE Annual Conference 
+    \end{highlights}
+\end{threecolentry}
+    
+    \section{Education}
+
+        \begin{threecolentry}
+            {\textbf{PhD}}
+            {2024 -- ongoing}
+            \textbf{Crest, Ecole Polytechnique, Institut Polytechnique de Paris}, Economics
+            \begin{highlights}
+                \item Under the supervision of Jean-Baptiste Michau and Gauthier Vermandel
+            \end{highlights}
+        \end{threecolentry}
+        
+    \vspace{0.2 cm} 
+    
+        \begin{threecolentry}{\textbf{\textit{Visit}}}
+        {Feb.-- March 2026}
+        \textbf{LSE, Grantham Research Institute on Climate Change and the Environment}
+        \begin{highlights}
+            \item hosted by Prof. Frank Venmans.
+        \end{highlights}
+        
+        \end{threecolentry}
+        
+    \vspace{0.2 cm}    
+    
+        \begin{threecolentry}{\textbf{MsC}}{
+            2022-2024
+        }
+            \textbf{Institut Polytechnique de Paris}, Economics
+            \begin{highlights}
+                \item First year at Ecole Polytechnique, second year at Ecole Nationale de la Statistique et de l'Administration Economique.
+                \item Master thesis under the supervision of Jean-Baptiste Michau and Gauthier Vermandel: The Effect of Path Dependence on Sustainable Growth Trajectories. 
+            \end{highlights}
+        \end{threecolentry}
+
+        \vspace{0.2 cm}
+        
+        \begin{threecolentry}{\textbf{BS}}{
+            2018-2021
+        }
+            \textbf{Université Paris 1 Panthéon-Sorbonne}, Economics
+            \begin{highlights}
+                \item First two years in Classe préparatoire at Lycée Turgot
+            \end{highlights}
+        \end{threecolentry}
+
+
+    
+    \section{Experience}
+\begin{twocolentry}{
+    Sept 2024 – June 2026
+}
+    \textbf{Ecole Polytechnique}, Teaching Assistant
+    \begin{highlights}
+        \item Macroeconomics, Ecole Polytechnique, Bachelor of Science. Pr. Mehdi Senouci and Pr. Gauthier Vermandel. Fall 2026.
+        \item  Introduction to Economics, Ecole Polytechnique, Bachelor level. Pr. Olivier Gossner, Pr. Yves Le Yaouanq, and Pr. Jean-Baptiste Michau. Spring 2025 and 2026.
+        \item Macroeconomics 1, Master in Economics, Institut Polytechnique de Paris. Pr. Antonin Bergeaud,  Pr. Giovanni Ricco, and Pr. Alessandro Riboni. Fall 2024, 2025, 2026.
+    \end{highlights}
+\end{twocolentry}
+
+\vspace{0.2 cm} 
+
+\begin{twocolentry}{
+    March 2023 – Dec 2023
+}
+    \textbf{France Stratégie}, Analyst (Internship and part-time)
+    \begin{highlights}
+        \item Evaluated the France Relance recovery plan, focusing on economic impact assessments.
+        \item Processed large datasets and contributed to writing two chapters: “Territorial Deployment of Funds” and “Reduction of Taxes on Production.”
+    \end{highlights}
+\end{twocolentry}
+
+\vspace{0.2 cm}
+
+\begin{twocolentry}{
+    June 2022 – Aug 2022
+}
+    \textbf{Laboratory for Interdisciplinary Evaluation of Public Policies (LIEPP)}, Research Assistant (Internship)
+    \begin{highlights}
+        \item Assisted Jean-Charles Bricongne (Banque de France) in evaluating the impact of economists' social backgrounds on their academic work.
+        \item Conducted data analysis and literature review to assess correlations between social background and research focus.
+    \end{highlights}
+\end{twocolentry}
+
+\vspace{0.2 cm}
+
+\begin{twocolentry}{
+    Oct 2020 – May 2022
+}
+    \textbf{Paris School of Economics}, Research Assistant
+    \begin{highlights}
+        \item Worked with Joyce Sultan (Institut des Politiques Publiques) on two studies, including Note IPP n°76 and an experiment on skill impact on employment.
+        \item Performed statistical analyses using Stata and RStudio to support research findings.
+        \item Contributed to the design and implementation of experimental methodologies.
+    \end{highlights}
+\end{twocolentry}
+
+\section{Non Academic Publications}
+\textbf{ Où le plan France Relance s’est-il déployé ?} – France Stratégie, Note d'Analyse n°140 
+\begin{highlights}
+    \item Descriptive analysis of the geographic allocation of France Relance funds.
+\end{highlights}
+
+\vspace{0.2 cm}
+
+\textbf{Comité d'évaluation du plan France Relance – Rapport final} - France Stratégie 
+\begin{highlights}
+        \item Evaluation of France Relance.
+        \item I contributed to the chapter on macroeconomic deployment, economic recovery, and production taxes.
+\end{highlights} 
+
+\section{Miscellaneous}
+        
+        \begin{onecolentry}
+            \textbf{Languages:} Julia, R, Matlab
+        \end{onecolentry}
+
+        \vspace{0.2 cm}
+
+        \begin{onecolentry}
+            \textbf{Langage:} French (native), English (fluent)
+        \end{onecolentry}
+
+\end{document}
