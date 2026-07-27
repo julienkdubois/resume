@@ -1,0 +1,27 @@
+name: Compiler le CV en PDF
+on:
+  push:
+    branches: [ "main", "master" ]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Récupérer le code source
+        uses: actions/checkout@v3
+
+      - name: Compiler le fichier LaTeX
+        uses: xu-cheng/latex-action@v3
+        with:
+          root_file: resume.tex 
+
+      - name: Sauvegarder le PDF généré sur GitHub
+        run: |
+          git config --global user.name 'github-actions[bot]'
+          git config --global user.email 'github-actions[bot]@users.noreply.github.com'
+          git add *.pdf
+          git commit -m "Génération automatique du PDF [skip ci]" || echo "Aucun changement"
+          git push
